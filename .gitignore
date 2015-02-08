@@ -5,3 +5,6 @@ include
 pip-selfcheck.json
 .Python
 
+build
+dist
+
