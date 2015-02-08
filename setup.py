@@ -1,6 +1,6 @@
 from setuptools import setup
 
-APP = ['play.py']
+APP = ['orgclock.py']
 DATA_FILES = []
 OPTIONS = {
     'argv_emulation': True,
