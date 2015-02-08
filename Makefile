@@ -2,13 +2,13 @@
 VIRTUALENV_ARGS=--system-site-packages
 
 all:
-	/usr/bin/python play.py
+	/usr/bin/python orgclock.py
 
 deploy:
 	/usr/bin/python setup.py py2app
 
 run_deployed:
-	open dist/play.app
+	open dist/orgclock.app
 
 # XXX: We can't use virtualenv due to https://github.com/jaredks/rumps/issues/9
 # Ensure that pip is installed globally.
