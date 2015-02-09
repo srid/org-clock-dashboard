@@ -1,7 +1,7 @@
 from setuptools import setup
 
 APP = ['orgclock.py']
-DATA_FILES = []
+DATA_FILES = ["task.png"]
 OPTIONS = {
     'argv_emulation': True,
     'plist': {

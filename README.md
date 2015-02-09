@@ -15,5 +15,5 @@ make
 ## Deployment
 
 ```
-make deploy
+make deploy run_deployed
 ```
