@@ -16,10 +16,10 @@ def run_emacsclient(elisp):
 ## orgmode functions
 ## -----------------
 
-org_regex = re.compile('\#\(\\"\s*(.+)\\".*')
+org_regex = re.compile('\#\(\"\s*\[(.+)/(.+)\] \((.+)\)\".*')
 def org_parse_clock_string(s):
     r = org_regex.search(s)
-    return r.groups()[0]
+    return r.groups()
 
 def org_clock_string():
     import re
@@ -29,8 +29,8 @@ def org_clock_string():
         # TODO: parse this string
         # TODO: set icon accordingly
         s = run_emacsclient("(org-clock-get-clock-string)").splitlines()[0]
-        s = org_parse_clock_string(s)
-        return s
+        elapsed, estimated, title = org_parse_clock_string(s)
+        return "%s -- %s" % (elapsed, title)
 
 def org_goto_clock():
     import subprocess
