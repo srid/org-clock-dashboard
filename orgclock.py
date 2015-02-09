@@ -1,6 +1,7 @@
 import re
 import rumps
-rumps.debug_mode(True)
+# rumps.debug_mode(True)
+
 
 ## utilities
 ## ---------
@@ -10,8 +11,9 @@ def run(cmd):
     return subprocess.check_output(cmd, shell=True).strip()
 
 def run_emacsclient(elisp):
-    return run('emacsclient -e "%s"' % elisp)
-
+    s = run('emacsclient -e "%s"' % elisp)
+    print '>>> %s ==> %s' % (elisp, s)
+    return s
 
 ## orgmode functions
 ## -----------------
@@ -22,12 +24,10 @@ def org_parse_clock_string(s):
     return r.groups()
 
 def org_clock_string():
-    import re
+    # TODO: set icon accordingly
     if run_emacsclient("(org-clock-is-active)") == "nil":
-        return "Org IDLE"
+        return None
     else:
-        # TODO: parse this string
-        # TODO: set icon accordingly
         s = run_emacsclient("(org-clock-get-clock-string)").splitlines()[0]
         elapsed, estimated, title = org_parse_clock_string(s)
         return "%s -- %s" % (elapsed, title)
@@ -56,12 +56,16 @@ class OrgClockStatusBarApp(rumps.App):
 if __name__ == "__main__":
     app = OrgClockStatusBarApp("Org clock")
     def timer_func(sender):
-        print sender
-        app.title = org_clock_string()
-    # XXX: running emacsclient every two seconds; may not be a good
-    # idea.
-    timer = rumps.Timer(timer_func, 2)
+        s = org_clock_string()
+        print s  # removing the print statement makes the app hang.
+        if s is not None:
+            app.title = s
+        else:
+            app.title = "Not tracking"
+
+    timer = rumps.Timer(timer_func, 5)
 
     # TODO: check emacs install before starting app.
     timer.start()
+    app.icon = "task.png"
     app.run()
