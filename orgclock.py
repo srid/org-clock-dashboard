@@ -1,5 +1,9 @@
+import re
 import rumps
 rumps.debug_mode(True)
+
+## utilities
+## ---------
 
 def run(cmd):
     import subprocess
@@ -8,6 +12,15 @@ def run(cmd):
 def run_emacsclient(elisp):
     return run('emacsclient -e "%s"' % elisp)
 
+
+## orgmode functions
+## -----------------
+
+org_regex = re.compile('\#\(\\"\s*(.+)\\".*')
+def org_parse_clock_string(s):
+    r = org_regex.search(s)
+    return r.groups()[0]
+
 def org_clock_string():
     import re
     if run_emacsclient("(org-clock-is-active)") == "nil":
@@ -15,7 +28,9 @@ def org_clock_string():
     else:
         # TODO: parse this string
         # TODO: set icon accordingly
-        return run_emacsclient("(org-clock-get-clock-string)").splitlines()[0]
+        s = run_emacsclient("(org-clock-get-clock-string)").splitlines()[0]
+        s = org_parse_clock_string(s)
+        return s
 
 def org_goto_clock():
     import subprocess
@@ -23,8 +38,12 @@ def org_goto_clock():
     subprocess.check_call(cmd, shell=True)
     subprocess.check_call(["open", "-a", "Emacs"]) # activate Emacs window
 
+
+## osx menubar app
+## ---------------
+
 class OrgClockStatusBarApp(rumps.App):
-    @rumps.clicked("Go to current task")
+    @rumps.clicked("Go to current/recent task")
     def current_task(self, _):
         org_goto_clock()
 
@@ -42,7 +61,7 @@ if __name__ == "__main__":
     # XXX: running emacsclient every two seconds; may not be a good
     # idea.
     timer = rumps.Timer(timer_func, 2)
+
+    # TODO: check emacs install before starting app.
     timer.start()
     app.run()
-    
-    
