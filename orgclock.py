@@ -12,7 +12,7 @@ def run(cmd):
 
 def run_emacsclient(elisp):
     s = run('emacsclient -e "%s"' % elisp)
-    print '>>> %s ==> %s' % (elisp, s)
+    # print '>>> %s ==> %s' % (elisp, s)
     return s
 
 ## orgmode functions
